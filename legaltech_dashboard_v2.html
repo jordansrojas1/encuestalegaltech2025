@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+html{background:#F5F4F0!important;color-scheme:light!important}
+body{margin:0;padding:0;font-family:Arial,Helvetica,sans-serif;font-size:14px;background:#F5F4F0!important;color:#1A1916!important;color-scheme:light!important;min-height:100vh}
+*{box-sizing:border-box;color-scheme:light!important}
+.hdr{background:#1A4D2E;padding:20px 28px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+.hdr h1{color:#fff;font-size:20px;font-weight:600;margin:0}
+.hdr p{color:rgba(255,255,255,.7);font-size:12px;margin:3px 0 0}
+.badge{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);border-radius:6px;padding:5px 12px;text-align:center;display:inline-block}
+.badge strong{display:block;font-size:17px;font-weight:700;color:#fff}
+.badge span{font-size:11px;color:rgba(255,255,255,.8)}
+.badges{display:flex;gap:8px;flex-wrap:wrap}
+.nav{background:#fff;border-bottom:2px solid #E0DED8;padding:0 28px;display:flex;overflow-x:auto;gap:0}
+.nav button{padding:12px 16px;font-size:13px;font-weight:500;color:#666;background:#fff;border:none;border-bottom:3px solid transparent;margin-bottom:-2px;cursor:pointer;white-space:nowrap;font-family:Arial,Helvetica,sans-serif}
+.nav button.on{color:#1A4D2E;border-bottom-color:#1A4D2E;font-weight:700}
+.nav button:hover{color:#1A4D2E}
+.flt{background:#fff;border-bottom:1px solid #E0DED8;padding:10px 28px;display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.flt select{font-size:12px;padding:4px 8px;border:1px solid #ccc;border-radius:5px;background:#fff;color:#1A1916;font-family:Arial,Helvetica,sans-serif;min-width:130px}
+.flt label{font-size:11px;color:#888;display:flex;flex-direction:column;gap:2px}
+.flt button{padding:4px 12px;font-size:12px;border:1px solid #ccc;border-radius:5px;background:#fff;color:#555;cursor:pointer;font-family:Arial,Helvetica,sans-serif}
+.flt button:hover{background:#f0f0f0}
+.fcnt{margin-left:auto;font-size:12px;color:#999}
+.fcnt b{color:#1A4D2E}
+.main{padding:20px 28px;background:#F5F4F0;min-height:400px}
+.pg{display:none}.pg.on{display:block}
+.krow{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:16px}
+.kcard{background:#fff;border:1px solid #E0DED8;border-radius:8px;padding:14px 16px}
+.kcard .v{font-size:26px;font-weight:300;color:#1A4D2E;line-height:1}
+.kcard .l{font-size:10px;color:#999;margin-top:4px;text-transform:uppercase;letter-spacing:.5px}
+.kcard .s{font-size:11px;color:#666;margin-top:1px}
+.irow{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px}
+.ins{background:#E8F4EE;border:1px solid #B5D9C5;border-radius:8px;padding:11px 14px}
+.ins .iv{font-size:18px;font-weight:700;color:#1A4D2E}
+.ins .it{font-size:11.5px;color:#1A4D2E;margin-top:2px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
+.g1{margin-bottom:12px}
+.card{background:#fff;border:1px solid #E0DED8;border-radius:8px;padding:16px}
+.ct{font-size:12px;font-weight:600;color:#555;margin-bottom:12px;padding-bottom:9px;border-bottom:1px solid #eee;text-transform:uppercase;letter-spacing:.3px}
+.hb{display:flex;flex-direction:column;gap:7px}
+.hr{display:grid;grid-template-columns:150px 1fr 28px;align-items:center;gap:7px}
+.hn{font-size:11px;color:#555;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ht{height:10px;background:#F0EFEB;border-radius:5px;overflow:hidden}
+.hf{height:100%;border-radius:5px}
+.hc{font-size:11px;font-weight:700;color:#1A1916;text-align:right}
+.leg{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:8px}
+.li{display:flex;align-items:center;gap:4px;font-size:11px;color:#555}
+.ld{width:9px;height:9px;border-radius:2px;flex-shrink:0}
+.sb{display:flex;gap:10px;margin-bottom:12px}
+.si{flex:1;padding:7px 12px;font-size:13px;border:1px solid #ccc;border-radius:5px;background:#fff;color:#1A1916;font-family:Arial,Helvetica,sans-serif}
+.tw{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:11.5px;background:#fff}
+th{text-align:left;padding:8px 10px;border-bottom:2px solid #E0DED8;font-size:10px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:.4px;background:#F5F4F0;white-space:nowrap}
+td{padding:7px 10px;border-bottom:1px solid #eee;color:#1A1916;vertical-align:top}
+tr:hover td{background:#FAF9F6}
+.pill{display:inline-block;padding:1px 7px;border-radius:12px;font-size:10px;font-weight:600}
+.pg-bar{display:flex;align-items:center;justify-content:space-between;padding:9px 12px;font-size:11px;color:#888;background:#fff;border-top:1px solid #eee}
+.pb{display:flex;gap:4px}
+.pbb{padding:3px 8px;border:1px solid #ccc;border-radius:4px;background:#fff;font-size:11px;cursor:pointer;font-family:Arial,Helvetica,sans-serif;color:#555}
+.pbb:hover{background:#f0f0f0}
+.pbb.on{background:#1A4D2E;color:#fff;border-color:#1A4D2E}
+@media(max-width:800px){
+  .krow{grid-template-columns:repeat(2,1fr)}
+  .g2{grid-template-columns:1fr}
+  .irow{grid-template-columns:1fr 1fr}
+  .main,.nav,.flt,.hdr{padding-left:14px;padding-right:14px}
+}
+@media(max-width:480px){
+  .irow{grid-template-columns:1fr}
+  .krow{grid-template-columns:1fr 1fr}
+  .hr{grid-template-columns:110px 1fr 24px}
+}
+</style>
+</head>
+<body>
+
+<div class="hdr">
+  <div>
+    <h1>Encuesta LegalTech 2025</h1>
+    <p>Adopción tecnológica · comunidad jurídica colombiana</p>
+  </div>
+  <div class="badges">
+    <div class="badge"><strong id="htot">44</strong><span>respuestas</span></div>
+    <div class="badge"><strong>Nov</strong><span>2025</span></div>
+    <div class="badge"><strong>29</strong><span>preguntas</span></div>
+  </div>
+</div>
+
+<div class="nav">
+  <button class="on" onclick="sp('resumen',this)">Resumen</button>
+  <button onclick="sp('perfil',this)">Perfil</button>
+  <button onclick="sp('tecnologia',this)">Tecnología</button>
+  <button onclick="sp('competencias',this)">Competencias</button>
+  <button onclick="sp('formacion',this)">Formación</button>
+  <button onclick="sp('datos',this)">Datos individuales</button>
+</div>
+
+<div class="flt">
+  <label>Edad<select id="fe" onchange="af()"><option value="">Todos</option></select></label>
+  <label>Ciudad<select id="fc" onchange="af()"><option value="">Todas</option></select></label>
+  <label>Condición<select id="fco" onchange="af()"><option value="">Todas</option></select></label>
+  <label>Laboral<select id="fl" onchange="af()"><option value="">Todas</option></select></label>
+  <button onclick="rf()">Limpiar</button>
+  <div class="fcnt">Mostrando <b id="fcn">44</b> de 44</div>
+</div>
+
+<div class="main">
+
+<div id="pg-resumen" class="pg on">
+  <div class="krow" id="kpis"></div>
+  <div class="irow" id="ins"></div>
+  <div class="g2">
+    <div class="card"><div class="ct">Impacto percibido de la tecnología en el derecho</div><div style="position:relative;height:190px"><canvas id="c-imp"></canvas></div></div>
+    <div class="card"><div class="ct">Preparación para usar legaltech</div><div class="leg" id="l-prep"></div><div style="position:relative;height:160px"><canvas id="c-prep"></canvas></div></div>
+  </div>
+  <div class="g2">
+    <div class="card"><div class="ct">Formación formal en legaltech</div><div class="leg" id="l-form"></div><div style="position:relative;height:160px"><canvas id="c-form"></canvas></div></div>
+    <div class="card"><div class="ct">Interés en un curso de legaltech</div><div class="leg" id="l-int"></div><div style="position:relative;height:160px"><canvas id="c-int"></canvas></div></div>
+  </div>
+</div>
+
+<div id="pg-perfil" class="pg">
+  <div class="g2">
+    <div class="card"><div class="ct">Rango de edad</div><div style="position:relative;height:200px"><canvas id="c-edad"></canvas></div></div>
+    <div class="card"><div class="ct">Condición profesional</div><div class="hb" id="bh-cond"></div></div>
+  </div>
+  <div class="g2">
+    <div class="card"><div class="ct">Situación laboral</div><div class="hb" id="bh-lab"></div></div>
+    <div class="card"><div class="ct">Ciudad</div><div class="hb" id="bh-ciu"></div></div>
+  </div>
+</div>
+
+<div id="pg-tecnologia" class="pg">
+  <div class="g2">
+    <div class="card"><div class="ct">Herramientas usadas</div><div class="hb" id="bh-herr"></div></div>
+    <div class="card"><div class="ct">Barreras para adopción</div><div class="hb" id="bh-bar"></div></div>
+  </div>
+  <div class="g2">
+    <div class="card"><div class="ct">Profesores fomentan tecnología</div><div class="leg" id="l-ment"></div><div style="position:relative;height:170px"><canvas id="c-ment"></canvas></div></div>
+    <div class="card"><div class="ct">Diferencias generacionales</div><div class="leg" id="l-gen"></div><div style="position:relative;height:170px"><canvas id="c-gen"></canvas></div></div>
+  </div>
+</div>
+
+<div id="pg-competencias" class="pg">
+  <div class="card g1"><div class="ct">Dominio promedio en competencias digitales (0–4)</div><div style="position:relative;height:280px"><canvas id="c-radar"></canvas></div></div>
+  <div class="card"><div class="ct">Distribución por nivel en cada competencia</div><div class="leg" id="l-sk"></div><div style="position:relative;height:270px"><canvas id="c-sk"></canvas></div></div>
+</div>
+
+<div id="pg-formacion" class="pg">
+  <div class="g2">
+    <div class="card"><div class="ct">Formato preferido de aprendizaje</div><div style="position:relative;height:220px"><canvas id="c-fmt"></canvas></div></div>
+    <div class="card"><div class="ct">Competencias esenciales</div><div class="hb" id="bh-esen"></div></div>
+  </div>
+  <div class="card g1"><div class="ct">Temas que les gustaría aprender</div><div class="hb" id="bh-apr"></div></div>
+</div>
+
+<div id="pg-datos" class="pg">
+  <div class="sb">
+    <input class="si" id="srch" type="text" placeholder="Buscar en respuestas..." oninput="rt()">
+    <span id="tc" style="font-size:11px;color:#999;white-space:nowrap;align-self:center"></span>
+  </div>
+  <div class="card" style="padding:0">
+    <div class="tw">
+      <table>
+        <thead><tr>
+          <th>#</th><th>Edad</th><th>Ciudad</th><th>Condición</th><th>Laboral</th>
+          <th>Impacto</th><th>Formación</th><th>Preparación</th><th>Interés</th><th>Formato</th>
+        </tr></thead>
+        <tbody id="tb"></tbody>
+      </table>
+    </div>
+    <div class="pg-bar"><span id="pi"></span><div class="pb" id="pb"></div></div>
+  </div>
+</div>
+
+</div>
+
+<script>
+const D=[
+{e:"45-54",c:"Bogotá",co:"Egresada",l:"No trabaja",im:"Moderadamente",fo:"No",pr:"Nada",ba:"Falta de capacitación,Mi universidad no enseña estas herramientas",me:"Solo algunos",ge:"Sí",s1:"Poco",s2:"Poco",s3:"Parcialmente",s4:"Poco",s5:"Poco",s6:"Poco",s7:"Poco",es:"Competencias LegalTech,Adaptabilidad Tecnológica",he:"IA generativa,Software análisis datos,Plataformas judiciales",ap:"Todos",in:"Sí",fm:"Manual/Guía"},
+{e:"23-27",c:"Bogotá",co:"Profesional ejercicio",l:"Sector público",im:"Completamente",fo:"Sí",pr:"Moderadamente",ba:"Falta de regulación clara",me:"Sí",ge:"Sí",s1:"Completamente",s2:"Completamente",s3:"Completamente",s4:"Completamente",s5:"Nada",s6:"Moderadamente",s7:"Nada",es:"Competencias LegalTech",he:"Bases de datos jurídicas,IA generativa,Plataformas judiciales",ap:"Regulación de IA",in:"Sí",fm:"Seminarios/charlas"},
+{e:"18-22",c:"Bogotá",co:"Profesional ejercicio",l:"Prácticas/judicatura",im:"Completamente",fo:"Parcial",pr:"Parcialmente",ba:"Falta de capacitación,Falta de regulación clara",me:"Sí",ge:"Sí",s1:"Parcialmente",s2:"Moderadamente",s3:"Completamente",s4:"Completamente",s5:"Parcialmente",s6:"Parcialmente",s7:"Poco",es:"Competencias LegalTech",he:"Bases de datos jurídicas,Firmas electrónicas,Gestores,IA generativa",ap:"Automatización contratos",in:"Sí",fm:"Talleres prácticos"},
+{e:"28-34",c:"Bogotá",co:"Profesional ejercicio",l:"Independiente",im:"Completamente",fo:"No",pr:"Parcialmente",ba:"Falta de capacitación,Falta de regulación clara,No sé por donde empezar",me:"Solo algunos",ge:"Sí",s1:"Moderadamente",s2:"Moderadamente",s3:"Parcialmente",s4:"Parcialmente",s5:"Poco",s6:"Parcialmente",s7:"Poco",es:"Competencias LegalTech",he:"Bases de datos jurídicas,Firmas electrónicas,Gestores,IA generativa,Plataformas judiciales",ap:"Todos",in:"Sí",fm:"Talleres prácticos"},
+{e:"18-22",c:"Bogotá",co:"Egresada",l:"Prácticas/judicatura",im:"Completamente",fo:"Parcial",pr:"Moderadamente",ba:"Falta de capacitación",me:"Solo algunos",ge:"Sí",s1:"Moderadamente",s2:"Moderadamente",s3:"Parcialmente",s4:"Parcialmente",s5:"Parcialmente",s6:"Parcialmente",s7:"Parcialmente",es:"Competencias LegalTech",he:"Bases de datos jurídicas,IA generativa,Plataformas judiciales",ap:"Automatización contratos",in:"Sí",fm:"Certificaciones"},
+{e:"28-34",c:"Bogotá",co:"Profesional ejercicio",l:"Sector público",im:"Completamente",fo:"No",pr:"Poco",ba:"Falta de capacitación",me:"No",ge:"Sí",s1:"Poco",s2:"Poco",s3:"Poco",s4:"Poco",s5:"Poco",s6:"Poco",s7:"Poco",es:"Competencias LegalTech,Gobernanza Datos,Alfabetización IA,Adaptabilidad",he:"Bases de datos jurídicas",ap:"IA aplicada al derecho",in:"Tal vez",fm:"Cursos cortos"},
+{e:"55+",c:"Duitama",co:"Profesional ejercicio",l:"Independiente",im:"Completamente",fo:"No",pr:"Poco",ba:"Falta de capacitación,Falta de interés,No sé por donde empezar",me:"No",ge:"Sí",s1:"Poco",s2:"Poco",s3:"Nada",s4:"Nada",s5:"Nada",s6:"Nada",s7:"Nada",es:"Adaptabilidad Tecnológica",he:"Plataformas judiciales",ap:"Todos",in:"Sí",fm:"Talleres prácticos"},
+{e:"23-27",c:"Bogotá",co:"Egresada",l:"Prácticas/judicatura",im:"Moderadamente",fo:"No",pr:"Parcialmente",ba:"Falta de capacitación,Miedo reemplazo,Mi universidad no enseña estas herramientas",me:"Solo algunos",ge:"Sí",s1:"Moderadamente",s2:"Poco",s3:"Parcialmente",s4:"Moderadamente",s5:"Nada",s6:"Poco",s7:"Nada",es:"Competencias LegalTech",he:"Firmas electrónicas,IA generativa,Software análisis datos",ap:"Todos",in:"Sí",fm:"Talleres prácticos"},
+{e:"35-44",c:"Duitama",co:"Profesional ejercicio",l:"Independiente",im:"Moderadamente",fo:"No",pr:"Nada",ba:"Falta de capacitación,Costos económicos,Mi universidad no enseña estas herramientas",me:"Solo algunos",ge:"Sí",s1:"Moderadamente",s2:"Moderadamente",s3:"Moderadamente",s4:"Moderadamente",s5:"Parcialmente",s6:"Poco",s7:"Poco",es:"Adaptabilidad Tecnológica",he:"Firmas electrónicas,IA generativa,Plataformas judiciales",ap:"IA aplicada al derecho",in:"Sí",fm:"Seminarios/charlas"},
+{e:"28-34",c:"Bogotá",co:"Profesional ejercicio",l:"Sector público",im:"Completamente",fo:"No",pr:"Moderadamente",ba:"Falta de capacitación,Miedo reemplazo,Mi universidad no enseña estas herramientas",me:"Sí",ge:"Sí",s1:"Parcialmente",s2:"Poco",s3:"Poco",s4:"Poco",s5:"Poco",s6:"Poco",s7:"Poco",es:"Adaptabilidad Tecnológica",he:"Bases de datos jurídicas,Firmas electrónicas,Plataformas judiciales",ap:"Gestión digital despachos",in:"Sí",fm:"Cursos cortos"},
+{e:"55+",c:"Bogotá",co:"No ejerce",l:"Independiente",im:"Poco",fo:"No",pr:"Nada",ba:"Falta de capacitación",me:"No",ge:"Sí",s1:"Parcialmente",s2:"Parcialmente",s3:"Parcialmente",s4:"Parcialmente",s5:"Nada",s6:"Nada",s7:"Nada",es:"Adaptabilidad Tecnológica",he:"Bases de datos jurídicas,Firmas electrónicas,IA generativa,Plataformas judiciales",ap:"Todos",in:"Sí",fm:"Cursos cortos"},
+{e:"55+",c:"Bogotá",co:"Profesional ejercicio",l:"Independiente",im:"Completamente",fo:"Sí",pr:"Completamente",ba:"Falta de capacitación,Falta de interés,Miedo reemplazo",me:"Sí",ge:"Sí",s1:"Parcialmente",s2:"Parcialmente",s3:"Parcialmente",s4:"Parcialmente",s5:"Parcialmente",s6:"Parcialmente",s7:"Parcialmente",es:"Competencias LegalTech,Gobernanza Datos,Alfabetización IA,Adaptabilidad",he:"IA generativa,Plataformas judiciales",ap:"IA aplicada al derecho",in:"Sí",fm:"Seminarios/charlas"},
+{e:"55+",c:"Duitama",co:"No ejerce",l:"Pensionada",im:"Completamente",fo:"No",pr:"Poco",ba:"Falta de capacitación",me:"Solo algunos",ge:"Sí",s1:"Parcialmente",s2:"Poco",s3:"Poco",s4:"Parcialmente",s5:"Poco",s6:"Poco",s7:"Nada",es:"Alfabetización IA",he:"Ninguna",ap:"IA aplicada al derecho",in:"Sí",fm:"Cursos cortos"},
+{e:"18-22",c:"Bogotá",co:"Estudiante",l:"No trabaja",im:"Moderadamente",fo:"Parcial",pr:"Moderadamente",ba:"Falta de capacitación,Falta de regulación clara,Mi universidad no enseña estas herramientas",me:"Solo algunos",ge:"Sí",s1:"Poco",s2:"Parcialmente",s3:"Parcialmente",s4:"Poco",s5:"Nada",s6:"Nada",s7:"Nada",es:"Competencias LegalTech",he:"Bases de datos jurídicas,Firmas electrónicas,Plataformas judiciales",ap:"Todos",in:"Sí",fm:"Cursos cortos"},
+{e:"55+",c:"Bogotá",co:"Profesional ejercicio",l:"In-house",im:"Completamente",fo:"Sí",pr:"Moderadamente",ba:"Falta de capacitación,Miedo reemplazo,Falta de regulación",me:"Solo algunos",ge:"Sí",s1:"Completamente",s2:"Moderadamente",s3:"Parcialmente",s4:"Completamente",s5:"Moderadamente",s6:"Moderadamente",s7:"Parcialmente",es:"Competencias LegalTech,Gobernanza Datos,Alfabetización IA,Adaptabilidad",he:"Bases de datos jurídicas,Firmas electrónicas,Automatización docs,IA generativa,Plataformas judiciales",ap:"Regulación de IA",in:"Sí",fm:"Talleres prácticos"},
+{e:"23-27",c:"Bogotá",co:"Docente/investigador",l:"Estudiante+trabajo",im:"Parcialmente",fo:"No",pr:"Poco",ba:"Falta de capacitación,Falta de interés,Miedo reemplazo",me:"Solo algunos",ge:"Sí",s1:"Parcialmente",s2:"Parcialmente",s3:"Moderadamente",s4:"Moderadamente",s5:"Parcialmente",s6:"Parcialmente",s7:"Parcialmente",es:"Competencias LegalTech,Gobernanza Datos",he:"Bases de datos jurídicas,Firmas electrónicas,IA generativa",ap:"Legal design",in:"Tal vez",fm:"Cursos cortos"},
+{e:"23-27",c:"Bogotá",co:"Profesional ejercicio",l:"Firma/despacho",im:"Completamente",fo:"Sí",pr:"Completamente",ba:"Falta de capacitación,Costos económicos,Falta de regulación",me:"Sí",ge:"Sí",s1:"Completamente",s2:"Completamente",s3:"Completamente",s4:"Completamente",s5:"Moderadamente",s6:"Moderadamente",s7:"Moderadamente",es:"Competencias LegalTech,Gobernanza Datos,Alfabetización IA,Adaptabilidad",he:"Bases de datos jurídicas,Firmas electrónicas,IA generativa,Plataformas judiciales",ap:"IA aplicada al derecho",in:"Sí",fm:"Talleres prácticos"},
+{e:"28-34",c:"Bogotá",co:"Profesional ejercicio",l:"Independiente",im:"Parcialmente",fo:"No",pr:"Moderadamente",ba:"Falta de capacitación,Costos económicos,No sé por donde empezar",me:"No",ge:"Sí",s1:"Completamente",s2:"Completamente",s3:"Parcialmente",s4:"Parcialmente",s5:"Nada",s6:"Poco",s7:"Nada",es:"Competencias LegalTech,Gobernanza Datos,Alfabetización IA",he:"Bases de datos jurídicas,Firmas electrónicas,Gestores,IA generativa",ap:"Legal design",in:"Sí",fm:"Certificaciones"},
+{e:"28-34",c:"Bogotá",co:"Profesional ejercicio",l:"Sector público",im:"Moderadamente",fo:"Sí",pr:"Moderadamente",ba:"Falta de capacitación,Falta de interés,Costos económicos",me:"Solo algunos",ge:"Sí",s1:"Completamente",s2:"Completamente",s3:"Moderadamente",s4:"Completamente",s5:"Moderadamente",s6:"Moderadamente",s7:"Parcialmente",es:"Competencias LegalTech,Gobernanza Datos,Alfabetización IA,Adaptabilidad",he:"Bases de datos jurídicas,Firmas electrónicas,Gestores,IA generativa,Plataformas judiciales",ap:"Todos",in:"Sí",fm:"Talleres prácticos"},
+{e:"23-27",c:"Bogotá",co:"Profesional ejercicio",l:"Firma/despacho",im:"Completamente",fo:"No",pr:"Moderadamente",ba:"Falta de capacitación",me:"Solo algunos",ge:"Sí",s1:"Completamente",s2:"Moderadamente",s3:"Parcialmente",s4:"Completamente",s5:"Poco",s6:"Poco",s7:"Poco",es:"Competencias LegalTech,Gobernanza Datos,Adaptabilidad",he:"Bases de datos jurídicas,Gestores,IA generativa,Plataformas judiciales",ap:"Ciberseguridad",in:"Sí",fm:"Cursos cortos"},
+{e:"35-44",c:"Duitama",co:"Profesional ejercicio",l:"Independiente",im:"Moderadamente",fo:"Parcial",pr:"Moderadamente",ba:"Falta de capacitación",me:"Solo algunos",ge:"Sí",s1:"Parcialmente",s2:"Parcialmente",s3:"Parcialmente",s4:"Parcialmente",s5:"Parcialmente",s6:"Parcialmente",s7:"Poco",es:"Alfabetización IA,Adaptabilidad",he:"Bases de datos jurídicas,Gestores,IA generativa",ap:"Ciberseguridad",in:"Sí",fm:"Cursos cortos"},
+{e:"18-22",c:"Tunja",co:"Estudiante",l:"Estudiante+trabajo",im:"Moderadamente",fo:"Sí",pr:"Parcialmente",ba:"Falta de capacitación,Miedo reemplazo,Falta de regulación",me:"Solo algunos",ge:"Sí",s1:"Parcialmente",s2:"Parcialmente",s3:"Parcialmente",s4:"Parcialmente",s5:"Parcialmente",s6:"Parcialmente",s7:"Parcialmente",es:"Gobernanza Datos",he:"Ninguna",ap:"Análisis datos jurídicos",in:"Sí",fm:"Cursos cortos"},
+{e:"23-27",c:"Bogotá",co:"Estudiante",l:"Independiente",im:"Moderadamente",fo:"Parcial",pr:"Parcialmente",ba:"Falta de capacitación,Costos económicos,Mi universidad no enseña estas herramientas",me:"Solo algunos",ge:"Sí",s1:"Moderadamente",s2:"Moderadamente",s3:"Poco",s4:"Moderadamente",s5:"Moderadamente",s6:"Parcialmente",s7:"Parcialmente",es:"Competencias LegalTech,Gobernanza Datos,Alfabetización IA,Adaptabilidad",he:"Bases de datos jurídicas,Firmas electrónicas,Gestores,IA generativa",ap:"IA aplicada al derecho",in:"Sí",fm:"Certificaciones"},
+{e:"23-27",c:"Bogotá",co:"Egresada",l:"No trabaja",im:"Completamente",fo:"No",pr:"Parcialmente",ba:"Falta de capacitación,Costos económicos,Falta de regulación,Mi universidad no enseña estas herramientas",me:"Sí",ge:"Sí",s1:"Moderadamente",s2:"Moderadamente",s3:"Poco",s4:"Poco",s5:"Moderadamente",s6:"Poco",s7:"Poco",es:"Competencias LegalTech,Gobernanza Datos,Alfabetización IA,Adaptabilidad",he:"Bases de datos jurídicas,IA generativa,Plataformas judiciales",ap:"Todos",in:"Tal vez",fm:"Certificaciones"},
+{e:"23-27",c:"Bogotá",co:"Profesional ejercicio",l:"Economía solidaria",im:"Moderadamente",fo:"Sí",pr:"Moderadamente",ba:"Miedo reemplazo,Costos económicos,Falta de regulación",me:"Sí",ge:"Sí",s1:"Moderadamente",s2:"Moderadamente",s3:"Poco",s4:"Completamente",s5:"Poco",s6:"Poco",s7:"Poco",es:"Competencias LegalTech,Gobernanza Datos,Alfabetización IA,Adaptabilidad",he:"Bases de datos jurídicas,Firmas electrónicas,Gestores,IA generativa",ap:"Análisis datos jurídicos",in:"Sí",fm:"Cursos cortos"},
+{e:"28-34",c:"Bogotá",co:"Estudiante",l:"Estudiante+trabajo",im:"Completamente",fo:"Parcial",pr:"Moderadamente",ba:"Falta de capacitación,Costos económicos",me:"Sí",ge:"Sí",s1:"Completamente",s2:"Completamente",s3:"Moderadamente",s4:"Moderadamente",s5:"Moderadamente",s6:"Completamente",s7:"Completamente",es:"Gobernanza Datos,Adaptabilidad",he:"Bases de datos jurídicas,Firmas electrónicas,IA generativa,Plataformas judiciales",ap:"Todos",in:"Tal vez",fm:"Talleres prácticos"},
+{e:"23-27",c:"Bogotá",co:"Profesional ejercicio",l:"Firma/despacho",im:"Completamente",fo:"Sí",pr:"Moderadamente",ba:"Falta de capacitación,Falta de interés,Miedo reemplazo",me:"Solo algunos",ge:"Sí",s1:"Completamente",s2:"Completamente",s3:"Moderadamente",s4:"Completamente",s5:"Moderadamente",s6:"Parcialmente",s7:"Nada",es:"Competencias LegalTech,Gobernanza Datos,Alfabetización IA,Adaptabilidad",he:"Bases de datos jurídicas,Firmas electrónicas,IA generativa,Plataformas judiciales",ap:"Todos",in:"Sí",fm:"Talleres prácticos"},
+{e:"23-27",c:"Bogotá",co:"Profesional ejercicio",l:"Firma/despacho",im:"Completamente",fo:"Sí",pr:"Moderadamente",ba:"Falta de capacitación,Falta de interés,Miedo reemplazo",me:"Solo algunos",ge:"Sí",s1:"Completamente",s2:"Completamente",s3:"Moderadamente",s4:"Completamente",s5:"Moderadamente",s6:"Parcialmente",s7:"Nada",es:"Competencias LegalTech,Gobernanza Datos,Alfabetización IA,Adaptabilidad",he:"Bases de datos jurídicas,Firmas electrónicas,IA generativa,Plataformas judiciales",ap:"Todos",in:"Sí",fm:"Talleres prácticos"},
+{e:"23-27",c:"Duitama",co:"Profesional ejercicio",l:"Firma/despacho",im:"Moderadamente",fo:"No",pr:"Moderadamente",ba:"Falta de capacitación,Falta de interés,Falta de regulación",me:"Sí",ge:"Sí",s1:"Moderadamente",s2:"Moderadamente",s3:"Moderadamente",s4:"Moderadamente",s5:"Parcialmente",s6:"Parcialmente",s7:"Parcialmente",es:"Competencias LegalTech,Adaptabilidad",he:"Bases de datos jurídicas,IA generativa,Plataformas judiciales",ap:"Gestión digital despachos",in:"Sí",fm:"Cursos cortos"},
+{e:"23-27",c:"Bogotá",co:"Profesional ejercicio",l:"Firma/despacho",im:"Completamente",fo:"No",pr:"Parcialmente",ba:"Falta de capacitación,Miedo reemplazo",me:"Solo algunos",ge:"Sí",s1:"Moderadamente",s2:"Poco",s3:"Poco",s4:"Moderadamente",s5:"Nada",s6:"Poco",s7:"Nada",es:"Competencias LegalTech,Adaptabilidad",he:"Firmas electrónicas,IA generativa,Plataformas judiciales",ap:"Todos",in:"Sí",fm:"Seminarios/charlas"},
+{e:"23-27",c:"Villavicencio",co:"Profesional ejercicio",l:"Sector público",im:"Completamente",fo:"No",pr:"Parcialmente",ba:"Falta de capacitación,Falta de interés",me:"Solo algunos",ge:"Sí",s1:"Moderadamente",s2:"Moderadamente",s3:"Parcialmente",s4:"Parcialmente",s5:"Poco",s6:"Poco",s7:"Poco",es:"Competencias LegalTech,Gobernanza Datos,Alfabetización IA,Adaptabilidad",he:"Bases de datos jurídicas,Firmas electrónicas,IA generativa,Plataformas judiciales",ap:"Todos",in:"Sí",fm:"Mentoría"},
+{e:"23-27",c:"Bogotá",co:"Estudiante",l:"Prácticas/judicatura",im:"Completamente",fo:"Sí",pr:"Moderadamente",ba:"Falta de capacitación,Falta de interés",me:"Solo algunos",ge:"Sí",s1:"Moderadamente",s2:"Moderadamente",s3:"Moderadamente",s4:"Completamente",s5:"Moderadamente",s6:"Moderadamente",s7:"Moderadamente",es:"Competencias LegalTech,Alfabetización IA,Adaptabilidad",he:"Bases de datos jurídicas,Firmas electrónicas,Gestores,Automatización,IA generativa,Plataformas judiciales",ap:"IA aplicada al derecho",in:"Sí",fm:"Talleres prácticos"},
+{e:"23-27",c:"Bogotá",co:"Profesional ejercicio",l:"Independiente",im:"Moderadamente",fo:"Sí",pr:"Parcialmente",ba:"Falta de capacitación",me:"No",ge:"Sí",s1:"Completamente",s2:"Completamente",s3:"Moderadamente",s4:"Completamente",s5:"Nada",s6:"Nada",s7:"Nada",es:"Competencias LegalTech,Gobernanza Datos,Alfabetización IA,Adaptabilidad",he:"Bases de datos jurídicas,IA generativa,Plataformas judiciales",ap:"Automatización contratos",in:"Sí",fm:"Cursos cortos"},
+{e:"23-27",c:"Bogotá",co:"Profesional ejercicio",l:"Firma/despacho",im:"Parcialmente",fo:"Sí",pr:"Poco",ba:"Falta de capacitación,Falta de interés,Costos económicos",me:"Solo algunos",ge:"No",s1:"Completamente",s2:"Moderadamente",s3:"Completamente",s4:"Completamente",s5:"Moderadamente",s6:"Completamente",s7:"Moderadamente",es:"Competencias LegalTech,Gobernanza Datos,Alfabetización IA,Adaptabilidad",he:"Bases de datos jurídicas,Firmas electrónicas,Gestores,Automatización,IA generativa,Plataformas judiciales",ap:"Análisis datos jurídicos",in:"Sí",fm:"Cursos cortos"},
+{e:"23-27",c:"Bogotá",co:"Profesional ejercicio",l:"Sector público",im:"Completamente",fo:"Sí",pr:"Moderadamente",ba:"Falta de capacitación,Falta de regulación,No sé por donde empezar",me:"Solo algunos",ge:"Sí",s1:"Completamente",s2:"Moderadamente",s3:"Parcialmente",s4:"Moderadamente",s5:"Moderadamente",s6:"Moderadamente",s7:"Moderadamente",es:"Adaptabilidad Tecnológica",he:"Bases de datos jurídicas,IA generativa,Software análisis datos,Plataformas judiciales",ap:"Regulación de IA",in:"Sí",fm:"Cursos cortos"},
+{e:"23-27",c:"Bogotá",co:"Egresada",l:"Sector público",im:"Completamente",fo:"No",pr:"Parcialmente",ba:"Falta de capacitación,No sé por donde empezar",me:"Sí",ge:"Sí",s1:"Moderadamente",s2:"Moderadamente",s3:"Moderadamente",s4:"Moderadamente",s5:"Poco",s6:"Poco",s7:"Nada",es:"Adaptabilidad Tecnológica",he:"Bases de datos jurídicas,Software análisis datos,Plataformas judiciales",ap:"Gestión digital despachos",in:"Sí",fm:"Talleres prácticos"},
+{e:"23-27",c:"Bucaramanga",co:"Estudiante",l:"Prácticas/judicatura",im:"Moderadamente",fo:"Parcial",pr:"Parcialmente",ba:"Falta de capacitación,Falta de regulación,No sé por donde empezar",me:"Solo algunos",ge:"Sí",s1:"Moderadamente",s2:"Parcialmente",s3:"Moderadamente",s4:"Moderadamente",s5:"Poco",s6:"Poco",s7:"Poco",es:"Competencias LegalTech,Gobernanza Datos,Alfabetización IA,Adaptabilidad",he:"Bases de datos jurídicas,Firmas electrónicas,Gestores,IA generativa,Plataformas judiciales",ap:"Todos",in:"Sí",fm:"Talleres prácticos"},
+{e:"45-54",c:"Bogotá",co:"Estudiante",l:"Sector público",im:"Parcialmente",fo:"Sí",pr:"Moderadamente",ba:"Falta de capacitación,Falta de regulación",me:"Sí",ge:"Sí",s1:"Parcialmente",s2:"Parcialmente",s3:"Parcialmente",s4:"Parcialmente",s5:"Parcialmente",s6:"Poco",s7:"Poco",es:"Competencias LegalTech,Gobernanza Datos,Alfabetización IA,Adaptabilidad",he:"Bases de datos jurídicas,IA generativa,Software análisis datos,Plataformas judiciales",ap:"Análisis datos jurídicos",in:"Sí",fm:"Mentoría"},
+{e:"23-27",c:"Roma",co:"Estudiante",l:"Estudiante+trabajo",im:"Completamente",fo:"Sí",pr:"Parcialmente",ba:"Falta de capacitación,Miedo reemplazo",me:"Solo algunos",ge:"Sí",s1:"Moderadamente",s2:"Moderadamente",s3:"Parcialmente",s4:"Parcialmente",s5:"Nada",s6:"Nada",s7:"Nada",es:"Alfabetización IA,Adaptabilidad",he:"Bases de datos jurídicas,Firmas electrónicas,IA generativa,Plataformas judiciales",ap:"Todos",in:"Tal vez",fm:"Cursos cortos"},
+{e:"18-22",c:"Bogotá",co:"Profesional ejercicio",l:"Firma/despacho",im:"Completamente",fo:"Parcial",pr:"Parcialmente",ba:"Falta de capacitación",me:"Solo algunos",ge:"Sí",s1:"Completamente",s2:"Moderadamente",s3:"Parcialmente",s4:"Moderadamente",s5:"Nada",s6:"Moderadamente",s7:"Nada",es:"Competencias LegalTech,Gobernanza Datos,Alfabetización IA,Adaptabilidad",he:"Bases de datos jurídicas,Firmas electrónicas,Gestores,IA generativa,Plataformas judiciales",ap:"Automatización contratos",in:"Sí",fm:"Cursos cortos"},
+{e:"45-54",c:"Santa Marta",co:"Profesional ejercicio",l:"Independiente",im:"Completamente",fo:"Sí",pr:"Moderadamente",ba:"Falta de capacitación",me:"Solo algunos",ge:"Sí",s1:"Completamente",s2:"Completamente",s3:"Completamente",s4:"Completamente",s5:"Completamente",s6:"Completamente",s7:"Completamente",es:"Competencias LegalTech,Adaptabilidad",he:"Bases de datos jurídicas,IA generativa",ap:"Legal design",in:"Sí",fm:"Cursos cortos"},
+{e:"55+",c:"Bogotá",co:"Docente/investigador",l:"Docencia+práctica",im:"Completamente",fo:"No",pr:"Moderadamente",ba:"Falta de capacitación,Miedo reemplazo,Costos económicos",me:"Solo algunos",ge:"Sí",s1:"Completamente",s2:"Completamente",s3:"Parcialmente",s4:"Completamente",s5:"Moderadamente",s6:"Completamente",s7:"Moderadamente",es:"Competencias LegalTech,Gobernanza Datos,Alfabetización IA,Adaptabilidad",he:"Bases de datos jurídicas,Firmas electrónicas,Gestores,IA generativa,Plataformas judiciales",ap:"Todos",in:"Tal vez",fm:"Talleres prácticos"},
+{e:"23-27",c:"Duitama",co:"Egresada",l:"Independiente",im:"Completamente",fo:"Sí",pr:"Parcialmente",ba:"No sé por donde empezar",me:"Solo algunos",ge:"No",s1:"Parcialmente",s2:"Poco",s3:"Poco",s4:"Nada",s5:"Parcialmente",s6:"Moderadamente",s7:"Moderadamente",es:"Alfabetización IA",he:"Firmas electrónicas",ap:"Gestión digital despachos",in:"Sí",fm:"Certificaciones"},
+{e:"18-22",c:"Bogotá",co:"Estudiante",l:"Firma/despacho",im:"Completamente",fo:"Sí",pr:"Moderadamente",ba:"Falta de capacitación,Miedo reemplazo,Falta de regulación",me:"Solo algunos",ge:"Sí",s1:"Moderadamente",s2:"Moderadamente",s3:"Moderadamente",s4:"Completamente",s5:"Moderadamente",s6:"Parcialmente",s7:"Nada",es:"Competencias LegalTech,Gobernanza Datos",he:"Bases de datos jurídicas,Gestores,Automatización,IA generativa,Plataformas judiciales",ap:"Todos",in:"Sí",fm:"Cursos cortos"}
+];
+
+const SC={Nada:0,Poco:1,Parcialmente:2,Moderadamente:3,Completamente:4};
+const SK=['s1','s2','s3','s4','s5','s6','s7'];
+const SL=['Búsqueda jurídica','Bases de datos','Automatización docs','IA generativa','Ciberseguridad','Legal analytics','Blockchain'];
+const LV=['Completamente','Moderadamente','Parcialmente','Poco','Nada'];
+const LC=['#1A4D2E','#2D7A4F','#EF9F27','#C0392B','#9B9892'];
+const CP='#1A4D2E',CA='#C67C1A',CR='#A93226',CB='#1A3A5C',CG='#9B9892';
+
+let F=[...D],CH={},TP=0;
+
+function cot(d,k){const m={};d.forEach(r=>{const v=(r[k]||'').trim();if(v)m[v]=(m[v]||0)+1});return m;}
+function cim(d,k){const m={};d.forEach(r=>{(r[k]||'').split(',').map(x=>x.trim()).filter(x=>x&&x.length>2).forEach(p=>{m[p]=(m[p]||0)+1})});return m;}
+function srt(m){return Object.entries(m).sort((a,b)=>b[1]-a[1]);}
+
+function pf(){
+  const se={e:new Set(),c:new Set(),co:new Set(),l:new Set()};
+  D.forEach(r=>{se.e.add(r.e);se.c.add(r.c);se.co.add(r.co);se.l.add(r.l);});
+  const eO=['18-22','23-27','28-34','35-44','45-54','55+'];
+  eO.filter(x=>se.e.has(x)).forEach(v=>document.getElementById('fe').add(new Option(v,v)));
+  [...se.c].sort().forEach(v=>document.getElementById('fc').add(new Option(v,v)));
+  [...se.co].sort().forEach(v=>document.getElementById('fco').add(new Option(v,v)));
+  [...se.l].sort().forEach(v=>document.getElementById('fl').add(new Option(v,v)));
+}
+
+function af(){
+  const e=document.getElementById('fe').value,c=document.getElementById('fc').value,co=document.getElementById('fco').value,l=document.getElementById('fl').value;
+  F=D.filter(r=>(!e||r.e===e)&&(!c||r.c===c)&&(!co||r.co===co)&&(!l||r.l===l));
+  document.getElementById('fcn').textContent=F.length;
+  document.getElementById('htot').textContent=F.length;
+  TP=0; ra();
+}
+function rf(){
+  ['fe','fc','fco','fl'].forEach(id=>document.getElementById(id).value='');
+  F=[...D];
+  document.getElementById('fcn').textContent=F.length;
+  document.getElementById('htot').textContent=F.length;
+  TP=0; ra();
+}
+
+function mkB(id,labels,ds,ix=false){
+  if(CH[id])CH[id].destroy();
+  const ctx=document.getElementById(id);if(!ctx)return;
+  CH[id]=new Chart(ctx,{type:'bar',data:{labels,datasets:ds},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{stacked:ix,grid:{display:false},ticks:{color:'#555',font:{size:10}}},y:{stacked:ix,beginAtZero:true,grid:{color:'rgba(0,0,0,0.06)'},ticks:{color:'#555',font:{size:10}}}}}});
+}
+function mkD(id,li,labs,vals,cols){
+  if(CH[id])CH[id].destroy();
+  const ctx=document.getElementById(id);if(!ctx)return;
+  CH[id]=new Chart(ctx,{type:'doughnut',data:{labels:labs,datasets:[{data:vals,backgroundColor:cols,borderWidth:2,borderColor:'#fff'}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}}}});
+  if(li){
+    const tot=vals.reduce((a,b)=>a+b,0);
+    document.getElementById(li).innerHTML=labs.map((l,i)=>`<div class="li"><div class="ld" style="background:${cols[i]}"></div>${l}: <b>${vals[i]}</b> (${Math.round(vals[i]/tot*100)}%)</div>`).join('');
+  }
+}
+function mkH(id,ents,col){
+  const el=document.getElementById(id);if(!el)return;
+  const mx=Math.max(...ents.map(e=>e[1]),1);
+  el.innerHTML=ents.map(([k,v])=>`<div class="hr"><div class="hn" title="${k}">${k}</div><div class="ht"><div class="hf" style="width:${Math.round(v/mx*100)}%;background:${col}"></div></div><div class="hc">${v}</div></div>`).join('');
+}
+
+function rKPI(){
+  const n=F.length,p=x=>Math.round(x/n*100)+'%';
+  const co=F.filter(r=>r.im==='Completamente').length;
+  const sf=F.filter(r=>r.fo==='No').length;
+  const it=F.filter(r=>r.in==='Sí').length;
+  const mm=F.filter(r=>r.pr==='Moderadamente'||r.pr==='Completamente').length;
+  document.getElementById('kpis').innerHTML=`
+    <div class="kcard"><div class="v">${n}</div><div class="l">Respuestas</div><div class="s">muestra total</div></div>
+    <div class="kcard"><div class="v">${p(co)}</div><div class="l">Impacto total</div><div class="s">Completamente cambiado</div></div>
+    <div class="kcard"><div class="v">${p(sf)}</div><div class="l">Sin formación LT</div><div class="s">nunca tuvieron legaltech</div></div>
+    <div class="kcard"><div class="v">${p(it)}</div><div class="l">Interés en curso</div><div class="s">quieren aprender</div></div>
+    <div class="kcard"><div class="v">${p(mm)}</div><div class="l">Moderado o más</div><div class="s">preparación legaltech</div></div>`;
+}
+function rIns(){
+  const b1=srt(cim(F,'ba'))[0];
+  const t1=srt(cim(F,'he')).find(([k])=>k.includes('IA'));
+  const f1=srt(cot(F,'fm'))[0];
+  document.getElementById('ins').innerHTML=`
+    <div class="ins"><div class="iv">${b1?b1[1]:'-'}</div><div class="it">señalan "<em>${b1?b1[0]:'—'}</em>" como principal barrera</div></div>
+    <div class="ins"><div class="iv">${t1?t1[1]:'-'}</div><div class="it">ya usan <em>IA generativa</em> en su práctica jurídica</div></div>
+    <div class="ins"><div class="iv">${f1?f1[0]:'-'}</div><div class="it">formato más preferido · ${f1?f1[1]:'-'} respuestas</div></div>`;
+}
+function rRes(){
+  rKPI(); rIns();
+  const im=cot(F,'im');
+  const iO=['Completamente','Moderadamente','Parcialmente','Poco','Nada'];
+  const iC=[CP,'#3A8C5C',CA,CR,CG];
+  const iL=iO.filter(k=>im[k]);
+  mkB('c-imp',iL,[{data:iL.map(k=>im[k]||0),backgroundColor:iL.map((_,i)=>iC[i]),borderRadius:4,borderSkipped:false}]);
+  const pr=cot(F,'pr');
+  const prO=['Completamente','Moderadamente','Parcialmente','Poco','Nada'].filter(k=>pr[k]);
+  mkD('c-prep','l-prep',prO,prO.map(k=>pr[k]||0),[CP,'#3A8C5C',CA,CR,CG]);
+  const fm=cot(F,'fo');
+  const fmO=['Sí','Parcial','No'].filter(k=>fm[k]);
+  mkD('c-form','l-form',fmO,fmO.map(k=>fm[k]||0),[CP,CA,CR]);
+  const it=cot(F,'in');
+  mkD('c-int','l-int',Object.keys(it),Object.values(it),[CP,CA,CG]);
+}
+function rPer(){
+  const ed=cot(F,'e');
+  const eO=['18-22','23-27','28-34','35-44','45-54','55+'].filter(k=>ed[k]);
+  mkB('c-edad',eO,[{data:eO.map(k=>ed[k]||0),backgroundColor:['#1A4D2E','#2D7A4F','#3A8C5C','#4D9E70','#6BB88A','#8DCCA6'],borderRadius:4,borderSkipped:false}]);
+  mkH('bh-cond',srt(cot(F,'co')).slice(0,8),'#534AB7');
+  mkH('bh-lab',srt(cot(F,'l')).slice(0,8),CP);
+  mkH('bh-ciu',srt(cot(F,'c')).slice(0,8),CA);
+}
+function rTec(){
+  mkH('bh-herr',srt(cim(F,'he')).slice(0,9),CB);
+  mkH('bh-bar',srt(cim(F,'ba')).filter(([k])=>k.length>3).slice(0,8),CR);
+  const m=cot(F,'me');
+  const mO=['Sí','Solo algunos','No'].filter(k=>m[k]);
+  mkD('c-ment','l-ment',mO,mO.map(k=>m[k]||0),[CP,CA,CR]);
+  const g=cot(F,'ge');
+  mkD('c-gen','l-gen',Object.keys(g),Object.values(g),[CP,CR,CG]);
+}
+function rCom(){
+  const sc=SK.map(k=>{let t=0,c=0;F.forEach(r=>{const s=SC[r[k]];if(s!==undefined){t+=s;c++;}});return c?+(t/c).toFixed(2):0;});
+  if(CH['c-radar'])CH['c-radar'].destroy();
+  const ctx=document.getElementById('c-radar');
+  if(ctx){CH['c-radar']=new Chart(ctx,{type:'radar',data:{labels:SL,datasets:[{data:sc,backgroundColor:'rgba(26,77,46,0.1)',borderColor:CP,borderWidth:2,pointBackgroundColor:CP,pointRadius:4}]},options:{responsive:true,maintainAspectRatio:false,scales:{r:{min:0,max:4,ticks:{stepSize:1,color:'#888',font:{size:9},backdropColor:'transparent'},pointLabels:{color:'#444',font:{size:10}},grid:{color:'rgba(0,0,0,0.08)'},angleLines:{color:'rgba(0,0,0,0.08)'}}},plugins:{legend:{display:false}}}});}
+  document.getElementById('l-sk').innerHTML=LV.map((l,i)=>`<div class="li"><div class="ld" style="background:${LC[i]}"></div>${l}</div>`).join('');
+  if(CH['c-sk'])CH['c-sk'].destroy();
+  const ctx2=document.getElementById('c-sk');
+  if(ctx2){CH['c-sk']=new Chart(ctx2,{type:'bar',data:{labels:SL,datasets:LV.map((lv,i)=>({label:lv,data:SK.map(k=>F.filter(r=>r[k]===lv).length),backgroundColor:LC[i],borderWidth:0}))},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{stacked:true,grid:{display:false},ticks:{color:'#555',font:{size:9},maxRotation:25}},y:{stacked:true,beginAtZero:true,grid:{color:'rgba(0,0,0,0.06)'},ticks:{color:'#555',font:{size:10}}}}}});}
+}
+function rFor(){
+  const fL=srt(cot(F,'fm'));
+  if(CH['c-fmt'])CH['c-fmt'].destroy();
+  const ctx=document.getElementById('c-fmt');
+  if(ctx){CH['c-fmt']=new Chart(ctx,{type:'bar',data:{labels:fL.map(([k])=>k),datasets:[{data:fL.map(([,v])=>v),backgroundColor:'#534AB7',borderRadius:4,borderSkipped:false}]},options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',plugins:{legend:{display:false}},scales:{x:{beginAtZero:true,grid:{color:'rgba(0,0,0,0.06)'},ticks:{color:'#555',font:{size:10}}},y:{grid:{display:false},ticks:{color:'#555',font:{size:10}}}}}});}
+  mkH('bh-esen',srt(cim(F,'es')).filter(([k])=>k.length>4).slice(0,8),CP);
+  mkH('bh-apr',srt(cim(F,'ap')).filter(([k])=>k.length>3).slice(0,8),CB);
+}
+function rt(){
+  const q=(document.getElementById('srch').value||'').toLowerCase();
+  const rows=F.filter(r=>!q||Object.values(r).some(v=>String(v).toLowerCase().includes(q)));
+  const s=TP*15,pr=rows.slice(s,s+15);
+  const pill=(v,bg,fc)=>`<span class="pill" style="background:${bg};color:${fc}">${v}</span>`;
+  const pp=v=>{if(v==='Completamente')return pill(v,'#E8F4EE','#1A4D2E');if(v==='Moderadamente')return pill(v,'#FEF5E5','#7A4F00');if(v==='Parcialmente')return pill(v,'#EBF0F8','#1A3A5C');return pill(v,'#f0efe9','#666');};
+  const ip=v=>{if(v==='Sí')return pill(v,'#E8F4EE','#1A4D2E');if(v==='Tal vez')return pill(v,'#FEF5E5','#7A4F00');return pill(v,'#FDECEC','#7A1A1A');};
+  document.getElementById('tb').innerHTML=pr.map((r,i)=>`<tr>
+    <td style="color:#999">${s+i+1}</td><td>${r.e}</td><td>${r.c}</td>
+    <td style="font-size:10.5px">${r.co}</td><td style="font-size:10.5px">${r.l}</td>
+    <td>${pp(r.im)}</td><td style="font-size:10.5px">${r.fo}</td>
+    <td>${pp(r.pr)}</td><td>${ip(r.in)}</td><td style="font-size:10.5px">${r.fm}</td>
+  </tr>`).join('');
+  document.getElementById('tc').textContent=`${rows.length} registros`;
+  const tot=Math.ceil(rows.length/15);
+  document.getElementById('pi').textContent=`Página ${TP+1} de ${tot}`;
+  const pb=document.getElementById('pb'); pb.innerHTML='';
+  const mb=(l,p,a)=>{const b=document.createElement('button');b.className='pbb'+(a?' on':'');b.textContent=l;b.onclick=()=>{TP=p;rt();};pb.appendChild(b);};
+  if(TP>0)mb('←',TP-1,false);
+  for(let p=Math.max(0,TP-2);p<=Math.min(tot-1,TP+2);p++)mb(p+1,p,p===TP);
+  if(TP<tot-1)mb('→',TP+1,false);
+}
+
+function ra(){
+  const a=document.querySelector('.pg.on');if(!a)return;
+  const id=a.id.replace('pg-','');
+  if(id==='resumen')rRes();
+  else if(id==='perfil')rPer();
+  else if(id==='tecnologia')rTec();
+  else if(id==='competencias')rCom();
+  else if(id==='formacion')rFor();
+  else if(id==='datos')rt();
+}
+function sp(id,btn){
+  document.querySelectorAll('.pg').forEach(p=>p.classList.remove('on'));
+  document.querySelectorAll('.nav button').forEach(b=>b.classList.remove('on'));
+  document.getElementById('pg-'+id).classList.add('on');
+  if(btn)btn.classList.add('on');
+  ra();
+}
+
+pf(); ra();
+</script>
+</body>
+</html>
